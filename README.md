@@ -16,30 +16,87 @@ A comprehensive financial document analysis system that processes corporate repo
 
 ## 🐛 Bugs Found and How We Fixed Them
 
-### **Critical Issues Resolved:**
+### **Immediate Critical Issues Found:**
 
-#### 1. **AI Model Integration**
-**Solution**: Implemented Ollama with `qwen2:0.5b` model for local AI processing, providing 100% local, private, and cost-free analysis.
+#### **a) agents.py Issues**
+**Problems**:
+- LLM not properly initialized (`llm = llm` was incorrect)
+- Financial analyst agent had problematic goal and backstory
+- Verifier agent was too permissive without proper document verification
+- Investment advisor and risk assessor agents were not being utilized
 
-#### 2. **Environment Variable Loading**
-**Problem**: Application failed to load API keys, causing `openai.OpenAIError`.
-**Solution**: Implemented `python-dotenv` library with proper `.env` file loading at runtime.
+**Solutions**:
+- Fixed LLM initialization with proper Ollama integration
+- Rewrote agent goals and backstories for professional financial analysis
+- Enhanced document verification with strict validation rules
+- Integrated all agents into the analysis workflow
 
-#### 3. **CrewAI Import & Versioning Errors**
-**Problem**: `ImportError` for core CrewAI components due to version changes.
-**Solution**: Updated import paths after systematic package inspection (e.g., `from crewai.tools.base_tool import Tool`).
+#### **b) main.py Issues**
+**Problems**:
+- `run_crew` function didn't use the `file_path` parameter
+- No error handling for invalid file types
+- No validation of PDF content
+- Missing proper API error responses
 
-#### 4. **Missing Dependencies**
-**Problem**: `ModuleNotFoundError` for required packages.
-**Solution**: Identified and installed all dependencies: `PyPDF2`, `google-search-results`, `serpapi`, `python-multipart`, `ollama`.
+**Solutions**:
+- Fixed file path handling in crew execution
+- Added comprehensive file type validation
+- Implemented PDF content verification
+- Added proper HTTP status codes and error responses
 
-#### 5. **Tool Instantiation Errors**
-**Problem**: `pydantic.ValidationError` due to raw functions passed to CrewAI Tasks.
-**Solution**: Wrapped tool functions in proper `Tool` class instances.
+#### **c) task.py Issues**
+**Problems**:
+- Tasks had unprofessional and non-compliant descriptions
+- Expected outputs were not suitable for financial analysis
+- Tasks didn't properly utilize the specialized agents
 
-#### 6. **Hierarchical Process Configuration**
-**Problem**: `ValidationError` for missing `manager_llm` in hierarchical Crew setup.
-**Solution**: Added `manager_llm` parameter to Crew instantiation.
+**Solutions**:
+- Rewrote all task descriptions for professional financial analysis
+- Defined clear, structured outputs for each analysis phase
+- Properly mapped tasks to corresponding agent expertise
+
+#### **d) tools.py Issues**
+**Problems**:
+- PDF class was not imported
+- InvestmentTool and RiskTool were not properly implemented
+- No error handling for file operations
+
+**Solutions**:
+- Added proper PDF parsing imports (`PyPDF2`)
+- Fully implemented all financial analysis tools
+- Added comprehensive error handling for file operations
+
+#### **e) requirements.txt Issues**
+**Problems**:
+- Missing PDF parsing library
+- Outdated package versions
+- Missing essential dependencies
+
+**Solutions**:
+- Added `PyPDF2` and other missing libraries
+- Updated all packages to compatible versions
+- Added `ollama` for local AI processing
+
+### **Security & Performance Issues Fixed:**
+
+#### **Security Concerns Resolved**:
+- **Input Validation**: Added comprehensive API endpoint validation
+- **Path Traversal**: Secured file handling to prevent directory traversal
+- **File Size Limits**: Implemented 10MB upload limit
+- **Content Type Validation**: Strict PDF-only file acceptance
+
+#### **Missing Features Implemented**:
+- **Error Handling**: Comprehensive exception management
+- **Logging**: Structured logging throughout the application
+- **Response Formatting**: Consistent JSON API responses
+- **Database Integration**: SQLAlchemy for persistent storage
+- **Queue Processing**: Celery for background task handling
+
+#### **Prompt Engineering Improvements**:
+- **Structured Prompts**: Professional financial analysis instructions
+- **Clear Hierarchy**: Defined agent roles and responsibilities
+- **Context & Constraints**: Added proper analysis boundaries
+- **Output Validation**: Ensured consistent, professional responses
 
 ### **Performance & Architecture Improvements:**
 - **Local AI Processing**: Switched to Ollama for better performance and privacy
